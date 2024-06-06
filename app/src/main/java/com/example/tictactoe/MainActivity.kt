@@ -43,6 +43,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,14 +78,19 @@ fun TTTScreen() {
         )
     }
 
+    val win = remember {
+        mutableStateOf<Win?>(null)
+    }
+
     val onTap: (Offset) -> Unit = {
-        if (playerTurn.value) {
+        if (playerTurn.value && win.value == null) {
             val x = (it.x / 333).toInt()
             val y = (it.y / 333).toInt()
             val posInMoves = y * 3 + x
             if (moves[posInMoves] == null) {
                 moves[posInMoves] = true
                 playerTurn.value = false
+                win.value = checkEndGame(moves)
             }
         }
     }
@@ -93,7 +99,7 @@ fun TTTScreen() {
         Header(playerTurn.value)
         Board(moves, onTap)
 
-        if (!playerTurn.value) {
+        if (!playerTurn.value && win.value == null) {
             CircularProgressIndicator(color = Color.Red, modifier = Modifier.padding(16.dp))
             val coroutineScope = rememberCoroutineScope()
             LaunchedEffect(key1 = Unit) {
@@ -104,13 +110,32 @@ fun TTTScreen() {
                         if (moves[i] == null) {
                             moves[i] = false
                             playerTurn.value = true
+                            win.value = checkEndGame(moves)
                             break
                         }
                     }
                 }
             }
         }
+        if (win.value != null) {
+            when (win.value) {
+                Win.PLAYER -> {
+                    Text(text = "Player has won \uD83C\uDF89", fontSize = 25.sp)
+                }
+
+                Win.AI -> {
+                    Text(text = "AI has won \uD83D\uDE24", fontSize = 25.sp)
+                }
+
+                Win.DRAW -> {
+                    Text(text = "Game is draw \uD83D\uDE33", fontSize = 25.sp)
+                }
+
+                null -> TODO()
+            }
+        }
     }
+
 }
 
 
@@ -149,6 +174,7 @@ fun Header(playerTurn: Boolean) {
         }
     }
 }
+
 
 @Composable
 fun Board(moves: List<Boolean?>, onTap: (Offset) -> Unit) {
