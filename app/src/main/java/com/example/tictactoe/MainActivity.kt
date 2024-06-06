@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -66,12 +67,12 @@ fun TTTScreen() {
     val playerTurn = remember { mutableStateOf(true) }
     val moves = remember {
         mutableStateListOf<Boolean?>(
-            true,
             null,
-            false,
             null,
-            true,
-            false,
+            null,
+            null,
+            null,
+            null,
             null,
             null,
             null
@@ -133,6 +134,15 @@ fun TTTScreen() {
 
                 null -> TODO()
             }
+        }
+        Button(onClick = {
+            playerTurn.value=true
+            win.value=null
+            for (i in 0..8){
+                moves[i]=null
+            }
+        }) {
+            Text(text = "Click to Restart Game")
         }
     }
 
