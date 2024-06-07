@@ -101,7 +101,7 @@ fun TTTScreen() {
         Board(moves, onTap)
 
         if (!playerTurn.value && win.value == null) {
-            CircularProgressIndicator(color = Color.Red, modifier = Modifier.padding(16.dp))
+            DotPulsing()
             val coroutineScope = rememberCoroutineScope()
             LaunchedEffect(key1 = Unit) {
                 coroutineScope.launch {
@@ -145,9 +145,7 @@ fun TTTScreen() {
             Text(text = "Click to Restart Game")
         }
     }
-
 }
-
 
 @Composable
 fun Header(playerTurn: Boolean) {
@@ -184,7 +182,6 @@ fun Header(playerTurn: Boolean) {
         }
     }
 }
-
 
 @Composable
 fun Board(moves: List<Boolean?>, onTap: (Offset) -> Unit) {
@@ -253,14 +250,14 @@ fun Board(moves: List<Boolean?>, onTap: (Offset) -> Unit) {
 fun GetComposableFromMove(move: Boolean?) {
     when (move) {
         true -> Image(
-            painter = painterResource(id = R.drawable.baseline_cross),
+            painter = painterResource(id = R.drawable.baseline_circle),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(1f),
             colorFilter = ColorFilter.tint(Color.Blue)
         )
 
         false -> Image(
-            painter = painterResource(id = R.drawable.baseline_circle),
+            painter = painterResource(id = R.drawable.baseline_cross),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(1f),
             colorFilter = ColorFilter.tint(Color.Red)
